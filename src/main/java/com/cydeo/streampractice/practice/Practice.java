@@ -4,10 +4,8 @@ import com.cydeo.streampractice.model.*;
 import com.cydeo.streampractice.service.*;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class Practice {
@@ -47,186 +45,245 @@ public class Practice {
     // Display all the countries
     public static List<Country> getAllCountries() {
         //TODO Implement the method
-        return new ArrayList<>();
+       // return new ArrayList<>();
+        return countryService.readAll();
     }
 
     // Display all the departments
     public static List<Department> getAllDepartments() {
         //TODO Implement the method
-        return new ArrayList<>();
+      //  return new ArrayList<>();
+
+        return departmentService.readAll();
     }
 
     // Display all the jobs
     public static List<Job> getAllJobs() {
         //TODO Implement the method
-        return new ArrayList<>();
+      //  return new ArrayList<>();
+
+        return jobService.readAll();
     }
 
     // Display all the locations
     public static List<Location> getAllLocations() {
         //TODO Implement the method
-        return new ArrayList<>();
+     //   return new ArrayList<>();
+        return locationService.readAll();
     }
 
     // Display all the regions
     public static List<Region> getAllRegions() {
         //TODO Implement the method
-        return new ArrayList<>();
+        //return new ArrayList<>();
+        return regionService.readAll();
     }
 
     // Display all the job histories
     public static List<JobHistory> getAllJobHistories() {
         //TODO Implement the method
-        return new ArrayList<>();
+        //return new ArrayList<>();
+        return jobHistoryService.readAll();
     }
 
     // Display all the employees' first names
     public static List<String> getAllEmployeesFirstName() {
         //TODO Implement the method
-        return new ArrayList<>();
+       return getAllEmployees().stream().map(Employee::getFirstName).collect(Collectors.toList());
+       // return new ArrayList<>();
+       // return getAllEmployees().
     }
 
     // Display all the countries' names
     public static List<String> getAllCountryNames() {
         //TODO Implement the method
-        return new ArrayList<>();
+      return getAllCountries().stream().map(Country::getCountryName).collect(Collectors.toList());
+        //  return new ArrayList<>();
     }
 
     // Display all the departments' managers' first names
     public static List<String> getAllDepartmentManagerFirstNames() {
         //TODO Implement the method
-        return new ArrayList<>();
+        return getAllDepartments().stream().map(Department::getManager)
+                .map(Employee::getFirstName).collect(Collectors.toList());
     }
 
     // Display all the departments where manager name of the department is 'Steven'
     public static List<Department> getAllDepartmentsWhichManagerFirstNameIsSteven() {
         //TODO Implement the method
-        return new ArrayList<>();
+        return getAllDepartments().stream().filter(p->p.getManager().getFirstName().equals("Steven"))
+                .collect(Collectors.toList());
+
     }
 
     // Display all the departments where postal code of the location of the department is '98199'
     public static List<Department> getAllDepartmentsWhereLocationPostalCodeIs98199() {
         //TODO Implement the method
-        return new ArrayList<>();
+        return  getAllDepartments().stream().filter(p->p.getLocation().getPostalCode().equals("98199"))
+                .collect(Collectors.toList());
     }
 
     // Display the region of the IT department
     public static Region getRegionOfITDepartment() throws Exception {
         //TODO Implement the method
-        return new Region();
+        return getAllDepartments().stream().filter(p->p.getDepartmentName().equals("IT"))
+                .map(Department::getLocation).map(Location::getCountry).map(Country::getRegion)
+                .findAny().get();
     }
 
     // Display all the departments where the region of department is 'Europe'
     public static List<Department> getAllDepartmentsWhereRegionOfCountryIsEurope() {
         //TODO Implement the method
-        return new ArrayList<>();
+        return getAllDepartments().stream()
+                .filter(p->p.getLocation().getCountry().getRegion().getRegionName().equals("Europe"))
+                .collect(Collectors.toList());
     }
 
     // Display if there is any employee with salary less than 1000. If there is none, the method should return true
     public static boolean checkIfThereIsNoSalaryLessThan1000() {
         //TODO Implement the method
-        return false;
+        return !getAllEmployees().stream().anyMatch(p->p.getSalary()<1000);
     }
 
     // Check if the salaries of all the employees in IT department are greater than 2000 (departmentName: IT)
     public static boolean checkIfThereIsAnySalaryGreaterThan2000InITDepartment() {
         //TODO Implement the method
-        return false;
+        return getAllEmployees().stream().filter(p->p.getDepartment().equals("IT"))
+                .allMatch(p->p.getSalary()>2000);
     }
 
     // Display all the employees whose salary is less than 5000
     public static List<Employee> getAllEmployeesWithLessSalaryThan5000() {
         //TODO Implement the method
-        return new ArrayList<>();
+        return getAllEmployees().stream().filter(p->p.getSalary()<5000)
+                .collect(Collectors.toList());
     }
 
     // Display all the employees whose salary is between 6000 and 7000
     public static List<Employee> getAllEmployeesSalaryBetween() {
         //TODO Implement the method
-        return new ArrayList<>();
+        return getAllEmployees().stream()
+                .filter(p->p.getSalary()>6000&&p.getSalary()<7000)
+                .collect(Collectors.toList());
     }
 
     // Display the salary of the employee Grant Douglas (lastName: Grant, firstName: Douglas)
     public static Long getGrantDouglasSalary() throws Exception {
         //TODO Implement the method
-        return 1L;
+        return getAllEmployees().stream().filter(p->p.getFirstName().equals("Douglas")&&
+                p.getLastName().equals("Grant")).map(Employee::getSalary).findAny().get();
     }
 
     // Display the maximum salary an employee gets
     public static Long getMaxSalary() throws Exception {
-        return 1L;
+     //  return getAllEmployees().stream().max(Comparator.comparing(Employee::getSalary))
+     //           .map(Employee::getSalary).stream().findFirst().get();
+        return getAllEmployees().stream().map(Employee::getSalary)
+                .max(Comparator.comparing(Long::longValue)).get();
+
     }
 
     // Display the employee(s) who gets the maximum salary
     public static List<Employee> getMaxSalaryEmployee() {
         //TODO Implement the method
-        return new ArrayList<>();
+        return getAllEmployees().stream()
+                .max(Comparator.comparing(Employee::getSalary))
+                .stream()
+                .limit(1).collect(Collectors.toList());
+
     }
 
     // Display the max salary employee's job
     public static Job getMaxSalaryEmployeeJob() throws Exception {
         //TODO Implement the method
-        return new Job();
+        return getAllEmployees() .stream()
+                .max(Comparator.comparing(Employee::getSalary))
+                .map(Employee::getJob).get()  ;
     }
 
     // Display the max salary in Americas Region
     public static Long getMaxSalaryInAmericasRegion() throws Exception {
         //TODO Implement the method
-        return 1L;
+        return getAllEmployees().stream()
+                .filter(p->p.getDepartment().getLocation().getCountry().getRegion().equals("Americas"))
+                .max(Comparator.comparing(Employee::getSalary))
+                .map(Employee::getSalary).get();
     }
 
     // Display the second maximum salary an employee gets
     public static Long getSecondMaxSalary() throws Exception {
         //TODO Implement the method
-        return 1L;
+        Long maxSalary=getMaxSalary();
+        return getAllEmployees().stream().map(Employee::getSalary)
+                .filter(p->p!=maxSalary).max(Comparator.comparing(Long::longValue)).get();
     }
 
     // Display the employee(s) who gets the second maximum salary
-    public static List<Employee> getSecondMaxSalaryEmployee() {
+    public static List<Employee> getSecondMaxSalaryEmployee() throws Exception{
         //TODO Implement the method
-        return new ArrayList<>();
+        Long secondMaxSalary=getSecondMaxSalary();
+        return getAllEmployees().stream().filter(p-> p.getSalary().equals(secondMaxSalary))
+                .collect(Collectors.toList());
     }
 
     // Display the minimum salary an employee gets
     public static Long getMinSalary() throws Exception {
         //TODO Implement the method
-        return 1L;
+        return getAllEmployees().stream().map(Employee::getSalary)
+                .min(Comparator.comparing(Long::longValue)).orElse(0l);
+
     }
 
     // Display the employee(s) who gets the minimum salary
-    public static List<Employee> getMinSalaryEmployee() {
+    public static List<Employee> getMinSalaryEmployee() throws Exception{
         //TODO Implement the method
-        return new ArrayList<>();
+        Long minSalary=getMinSalary();
+        return getAllEmployees().stream().filter(p->p.getSalary().equals(minSalary))
+                .collect(Collectors.toList());
+
+        /*return getAllEmployees().stream()
+                .min(Comparator.comparing(Employee::getSalary))
+                .stream()
+                .limit(1).collect(Collectors.toList());*/
     }
 
     // Display the second minimum salary an employee gets
     public static Long getSecondMinSalary() throws Exception {
         //TODO Implement the method
-        return 1L;
+        Long minSalary=getMinSalary();
+        return getAllEmployees().stream().map(Employee::getSalary)
+                .filter(p->p!=minSalary).min(Comparator.comparing(Long::longValue)).get();
     }
 
     // Display the employee(s) who gets the second minimum salary
-    public static List<Employee> getSecondMinSalaryEmployee() {
+    public static List<Employee> getSecondMinSalaryEmployee() throws Exception{
         //TODO Implement the method
-        return new ArrayList<>();
+        Long secondMinSalary=getSecondMinSalary();
+        return getAllEmployees().stream().filter(p-> p.getSalary().equals(secondMinSalary))
+                .collect(Collectors.toList());
     }
 
     // Display the average salary of the employees
     public static Double getAverageSalary() {
         //TODO Implement the method
-        return 1d;
+        return getAllEmployees().stream().map(Employee::getSalary)
+                .mapToDouble(p->p).average().orElse(Double.NaN);
     }
 
     // Display all the employees who are making more than average salary
     public static List<Employee> getAllEmployeesAboveAverage() {
         //TODO Implement the method
-        return new ArrayList<>();
+        return getAllEmployees().stream()
+                .filter(p->p.getSalary()>getAverageSalary())
+                .collect(Collectors.toList());
     }
 
     // Display all the employees who are making less than average salary
     public static List<Employee> getAllEmployeesBelowAverage() {
         //TODO Implement the method
-        return new ArrayList<>();
+        return getAllEmployees().stream()
+                .filter(p->p.getSalary()<getAverageSalary())
+                .collect(Collectors.toList());
     }
 
     // Display all the employees separated based on their department id number

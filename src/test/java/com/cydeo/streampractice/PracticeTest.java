@@ -270,7 +270,7 @@ public class PracticeTest {
     }
 
     @Test
-    public void shouldGetMinSalaryEmployee(){
+    public void shouldGetMinSalaryEmployee() throws Exception{
         List<Employee> employees = Practice.getMinSalaryEmployee();
         long actualSalary = 2100;
         Assert.assertEquals(1, employees.size());
@@ -284,7 +284,7 @@ public class PracticeTest {
     }
 
     @Test
-    public void shouldGetSecondMinSalaryEmployee(){
+    public void shouldGetSecondMinSalaryEmployee() throws Exception{
         List<Employee> employees = Practice.getSecondMinSalaryEmployee();
         long actualSalary = 2200;
         Assert.assertEquals(2, employees.size());
