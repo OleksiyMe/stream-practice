@@ -438,6 +438,7 @@ public class Practice {
 
         return getAllEmployees().stream()
                 .collect(Collectors.groupingBy(p -> p.getDepartment().getId()));
+
     }
 
     // Display the total number of the departments
